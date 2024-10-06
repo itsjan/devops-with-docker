@@ -176,3 +176,21 @@ Sample run
 
 ![terminal screenshot](ex1_7.png)
 
+### Exercise 1.8: Two line Dockerfile
+
+By default our devopsdockeruh/simple-web-service:alpine doesn't have a CMD. Instead, it uses ENTRYPOINT to declare which application is run.
+
+
+As you might've noticed it doesn't start the web service even though the name is "simple-web-service". A suitable argument is needed to start the server!
+![simple-web-servce](simple-web-service.png)
+
+Try docker run devopsdockeruh/simple-web-service:alpine hello. The application reads the argument "hello" but will inform that hello isn't accepted.
+
+In this exercise create a Dockerfile and use FROM and CMD to create a brand new image that automatically runs server.
+
+**Solution**
+```Dockerfile
+FROM devopsdockeruh/simple-web-service:alpine
+CMD ["server"]
+```
+![terminal screenshot](ex1_8.png)
