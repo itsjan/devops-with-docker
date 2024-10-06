@@ -105,3 +105,23 @@ Running a shell in the container
 $ docker exec -it a9 sh
 ```
 ![terminal screenshot](ex1_5.png)
+
+## Exercise 1.6: Hello Docker Hub
+Run docker run -it devopsdockeruh/pull_exercise.
+
+The command will wait for your input.
+
+Navigate through the Docker hub to find the docs and Dockerfile that was used to create the image.
+
+Read the Dockerfile and/or docs to learn what input will get the application to answer a "secret message".
+
+Submit the secret message and command(s) given to get it as your answer.
+
+**Solution**
+
+![docker hub screenshot](ex1_6.png)
+
+"This is the secret message"
+
+![terminal screenshot](ex1_6_b.png)
+
