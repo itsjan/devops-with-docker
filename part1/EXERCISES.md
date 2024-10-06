@@ -9,7 +9,7 @@ Stop two of the containers and leave one container running.
 Submit the output for docker ps -a which shows 2 stopped containers and one running.
 
 **Solution**
-
+Screenshot:
 ![terminal screenshot](ex1_1.png)
 
 ## Exercise 1.2: Cleanup
@@ -20,7 +20,7 @@ Clean the Docker daemon by removing all images and containers.
 Submit the output for docker ps -a and docker image ls
 
 **Solution**
-
+Screenshot:
 ![terminal screenshot](ex1_2.png)
 
 ## Exercise 1.3: Secret message
@@ -40,6 +40,7 @@ Terminal output:
 ```
 Secret message is: 'You can find the source code here: https://github.com/docker-hy'
 ```
+Screenshot:
 ![terminal screenshot](ex1_3.png)
 
 
@@ -55,19 +56,7 @@ You will notice that a few things required for proper execution are missing. Be 
 
 Note also that curl is NOT installed in the container yet. You will have to install it from inside of the container.
 
-Test inputting helsinki.fi into the application. It should respond with something like
-```html
-<html>
-  <head>
-    <title>301 Moved Permanently</title>
-  </head>
-
-  <body>
-    <h1>Moved Permanently</h1>
-    <p>The document has moved <a href="http://www.helsinki.fi/">here</a>.</p>
-  </body>
-</html>
-```
+Test inputting helsinki.fi into the application.
 
 This time return the command you used to start process and the command(s) you used to fix the ensuing problems.
 
@@ -79,9 +68,40 @@ This exercise has multiple solutions, if the curl for helsinki.fi works then it'
 
 ```bash
 $ docker run ubuntu -d --it --name curlweb sh -c ' apt-get -y curl && while true; do echo "Input website:"; read website; echo "Searching.."; sleep 1; curl http://$website; done'
-```
-in another terminal:
-```bash
+
 $ docker attach webcurl
 ```
+Screenshot:
 ![terminal screenshot](ex1_4.png)
+
+## Exercise 1.5: Sizes of images
+In the Exercise 1.3 we used devopsdockeruh/simple-web-service:ubuntu.
+
+Here is the same application but instead of Ubuntu is using Alpine Linux: devopsdockeruh/simple-web-service:alpine.
+
+Pull both images and compare the image sizes. Go inside the Alpine container and make sure the secret message functionality is the same. Alpine version doesn't have bash but it has sh, a more bare-bones shell.
+
+**Solution**
+
+Pulling the images
+```bash
+$ docker pull devopsdockeruh/simple-web-service:alpine
+```
+
+```bash
+$ docker pull devopsdockeruh/simple-web-service:ubuntu
+```
+Image sizes
+```bash
+$ docker images
+```
+![terminal screenshot](ex1_5_image_sizes.png)
+Running containers
+```bash
+$ docker image ls
+```
+Running a shell in the container
+```bash
+$ docker exec -it a9 sh
+```
+![terminal screenshot](ex1_5.png)
