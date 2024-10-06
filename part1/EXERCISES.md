@@ -74,7 +74,11 @@ $ docker attach webcurl
 Screenshot:
 ![terminal screenshot](ex1_4.png)
 
-## Exercise 1.5: Sizes of images
+---
+
+## A detailed look into an image
+
+### Exercise 1.5: Sizes of images
 In the Exercise 1.3 we used devopsdockeruh/simple-web-service:ubuntu.
 
 Here is the same application but instead of Ubuntu is using Alpine Linux: devopsdockeruh/simple-web-service:alpine.
@@ -106,7 +110,7 @@ $ docker exec -it a9 sh
 ```
 ![terminal screenshot](ex1_5.png)
 
-## Exercise 1.6: Hello Docker Hub
+### Exercise 1.6: Hello Docker Hub
 Run docker run -it devopsdockeruh/pull_exercise.
 
 The command will wait for your input.
@@ -124,4 +128,51 @@ Submit the secret message and command(s) given to get it as your answer.
 "This is the secret message"
 
 ![terminal screenshot](ex1_6_b.png)
+
+---
+
+## Building Images
+
+### Exercise 1.7: Image for script
+We can improve our previous solutions now that we know how to create and build a Dockerfile.
+
+Let us now get back to Exercise 1.4.
+
+Create a new file script.sh on your local machine with the following contents:
+```sh
+#!/bin/sh
+while true
+do
+  echo "Input website:"
+  read website; echo "Searching.."
+  sleep 1; curl http://$website
+done
+```
+
+Create a Dockerfile for a new image that starts from ubuntu:22.04 and add instructions to install curl into that image. Then add instructions to copy the script file into that image and finally set it to run on container start using CMD.
+
+After you have filled the Dockerfile, build the image with the name "curler".
+
+
+**Solution**
+```dockerfile
+FROM ubuntu:22.04
+
+RUN	apt-get update; \
+	apt-get install -y curl
+WORKDIR /usr/local/bin
+COPY ./script.sh .
+
+CMD ["./script.sh"]
+```
+Build
+
+```bash
+$ docker build . -t curler 
+```
+
+
+Sample run
+
+![terminal screenshot](ex1_7.png)
 

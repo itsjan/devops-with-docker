@@ -1,0 +1,1 @@
+/Users/jan/Documents/GitHub/devops-with-docker/1_build_image
