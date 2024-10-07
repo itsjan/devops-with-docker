@@ -19,6 +19,7 @@
     - [Exercise 1.11: Spring](#exercise-111-spring)
     - [Exercise 1.12: Hello, frontend!](#exercise-112-hello-frontend)
     - [Exercise 1.13: Hello, backend!](#exercise-113-hello-backend)
+    - [Mandatory Exercise 1.14: Environment](#mandatory-exercise-114-environment)
 
 
 ## Exercise 1.1: Getting started
@@ -392,3 +393,69 @@ Run command
 ```bash
 docker run -d -p 8080:8080 example-backend
 ```
+
+### Mandatory Exercise 1.14: Environment
+Start both the frontend and the backend with the correct ports exposed and add ENV to Dockerfile with the necessary information from both READMEs (front, back).
+
+Submit the edited Dockerfiles and commands used to run.
+
+**Solution**
+
+Backend Dockerfile
+```dockerfile
+FROM golang:1.16.14-buster
+
+EXPOSE 8080
+
+WORKDIR /go/src/app
+
+COPY . .
+
+RUN go build
+
+ENV PORT=8080
+ENV REQUEST_ORIGIN=http://localhost:5555
+
+CMD ["./server"]
+```
+
+Frontend Dockerfile
+
+```dockerfile
+FROM node:16
+
+EXPOSE 5000
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+RUN npx browserslist@latest --update-db
+
+RUN npm run build
+
+RUN npm install -g serve
+
+ENV REACT_APP_BACKEND_URL=http://localhost:8080/
+
+RUN  ["npm", "run", "build"]
+
+CMD ["serve", "-s", "-l", "5000", "build"]
+```
+
+Run backend
+```bash
+docker build . -t example-backend
+docker run -p 8080:8080 example-backend 
+```
+
+Run frontend
+```bash
+docker build . -t example-frontend 
+docker run -p 5555:5000 example-frontend
+```
+
