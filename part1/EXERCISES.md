@@ -17,6 +17,7 @@
     - [Exercise 1.10: Ports open](#exercise-110-ports-open)
   - [Utilizing tools from the Registry](#utilizing-tools-from-the-registry)
     - [Exercise 1.11: Spring](#exercise-111-spring)
+    - [Exercise 1.12: Hello, frontend!](#exercise-112-hello-frontend)
 
 
 ## Exercise 1.1: Getting started
@@ -291,4 +292,59 @@ build and run:
 $ docker build . -t javaspringapp 
 
 $ docker run -d -p 8080:8080 javaspringapp
+```
+### Exercise 1.12: Hello, frontend!
+A good developer creates well-written READMEs. Such that they can be used to create Dockerfiles with ease.
+
+Clone, fork or download the project from https://github.com/docker-hy/material-applications/tree/main/example-frontend.
+
+Create a Dockerfile for the project (example-frontend) and give a command so that the project runs in a Docker container with port 5000 exposed and published so when you start the container and navigate to http://localhost:5000 you will see message if you're successful.
+
+note that the port 5000 is reserved in the more recent OSX versions (Monterey, Big Sur), so you have to use some other host port
+Submit the Dockerfile.
+
+As in other exercises, do not alter the code of the project
+
+TIPS:
+
+The project has install instructions in README.
+Note that the app starts to accept connections when "Accepting connections at http://localhost:5000" has been printed to the screen, this takes a few seconds
+You do not have to install anything new outside containers.
+The project might not work with too new Node.js versions
+
+**Solution**
+
+Dockerfile
+```dockerfile
+FROM node:16
+
+EXPOSE 5000
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+RUN npx browserslist@latest --update-db
+
+RUN npm run build
+
+RUN npm install -g serve
+
+CMD ["serve", "-s", "-l", "5000", "build"]
+```
+
+Build command
+
+```bash
+docker build . -t example-frontend 
+```
+
+Run command 
+
+```bash
+docker run -d -p 5555:5000 example-frontend
 ```
