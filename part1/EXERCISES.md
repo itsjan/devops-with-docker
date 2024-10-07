@@ -18,6 +18,7 @@
   - [Utilizing tools from the Registry](#utilizing-tools-from-the-registry)
     - [Exercise 1.11: Spring](#exercise-111-spring)
     - [Exercise 1.12: Hello, frontend!](#exercise-112-hello-frontend)
+    - [Exercise 1.13: Hello, backend!](#exercise-113-hello-backend)
 
 
 ## Exercise 1.1: Getting started
@@ -347,4 +348,47 @@ Run command
 
 ```bash
 docker run -d -p 5555:5000 example-frontend
+```
+
+### Exercise 1.13: Hello, backend!
+
+Clone, fork or download a project from https://github.com/docker-hy/material-applications/tree/main/example-backend.
+
+Create a Dockerfile for the project (example-backend). Start the container with port 8080 published.
+
+When you start the container and navigate to http://localhost:8080/ping you should get a "pong" as a response.
+
+Submit the Dockerfile and the command used.
+
+Do not alter the code of the project
+
+
+
+**Solution**
+
+Dockerfile
+
+```dockerfile
+FROM golang:1.16.14-buster
+
+EXPOSE 8080
+
+WORKDIR /go/src/app
+
+COPY . .
+
+RUN go build
+
+CMD ["./server"]
+```
+
+Build command
+```bash
+docker build . -t example-backend
+```
+
+Run command
+
+```bash
+docker run -d -p 8080:8080 example-backend
 ```
