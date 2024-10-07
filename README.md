@@ -6,5 +6,5 @@
 
 ## Excercise Solutions
 
-- part 1: [solutions](./part1/EXERCISES.md) Only Dockerfiles and commandline options are used, no docker compose.
-    
+- part 1: [solutions](./part1/SOLUTIONS.md) Only Dockerfiles and commandline options are used, no docker compose.
+- part 2 :     
