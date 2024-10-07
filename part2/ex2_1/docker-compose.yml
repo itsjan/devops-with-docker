@@ -1,0 +1,13 @@
+name: ex2_1-simple-web-service
+
+services:
+  simple-web-service:
+    image: devopsdockeruh/simple-web-service
+    ports:
+      - "8080:8080"
+    volumes:
+      # bind log file to a local file.
+      # file text.log must exist (touch text.log)
+      - ./text.log:/usr/src/app/text.log
+
+    # command: server

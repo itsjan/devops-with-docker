@@ -1,0 +1,19 @@
+name: example-front-and-back
+
+services:
+  example-frontend:
+    build: example-frontend
+    image: example-frontend  
+    restart: "no"
+    ports:
+      - 5555:5000 
+    depends_on:
+      - example-backend
+  
+  example-backend:
+    build: example-backend
+    image: example-backend
+    restart: "no"
+    ports:
+      - 8080:8080
+    
