@@ -1,6 +1,6 @@
-# Devops with Docker - Exercices PART 1
+# Devops with Docker - Exercises PART 1
 
-- [Devops with Docker - Exercices PART 1](#devops-with-docker---exercices-part-1)
+- [Devops with Docker - Exercises PART 1](#devops-with-docker---exercises-part-1)
   - [Exercise 1.1: Getting started](#exercise-11-getting-started)
   - [Exercise 1.2: Cleanup](#exercise-12-cleanup)
   - [Exercise 1.3: Secret message](#exercise-13-secret-message)
@@ -20,6 +20,7 @@
     - [Exercise 1.12: Hello, frontend!](#exercise-112-hello-frontend)
     - [Exercise 1.13: Hello, backend!](#exercise-113-hello-backend)
     - [Mandatory Exercise 1.14: Environment](#mandatory-exercise-114-environment)
+
 
 
 ## Exercise 1.1: Getting started

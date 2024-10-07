@@ -1,4 +1,4 @@
-# DevOps with Docker - Exercices PART 2
+# DevOps with Docker - Exercises PART 2
 
 ## Migrating to Docker Compose
 
