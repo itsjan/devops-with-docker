@@ -1,5 +1,24 @@
 # Devops with Docker - Exercices PART 1
 
+- [Devops with Docker - Exercices PART 1](#devops-with-docker---exercices-part-1)
+  - [Exercise 1.1: Getting started](#exercise-11-getting-started)
+  - [Exercise 1.2: Cleanup](#exercise-12-cleanup)
+  - [Exercise 1.3: Secret message](#exercise-13-secret-message)
+  - [Exercise 1.4: Missing dependencies](#exercise-14-missing-dependencies)
+  - [A detailed look into an image](#a-detailed-look-into-an-image)
+    - [Exercise 1.5: Sizes of images](#exercise-15-sizes-of-images)
+    - [Exercise 1.6: Hello Docker Hub](#exercise-16-hello-docker-hub)
+  - [Building Images](#building-images)
+    - [Exercise 1.7: Image for script](#exercise-17-image-for-script)
+    - [Exercise 1.8: Two line Dockerfile](#exercise-18-two-line-dockerfile)
+  - [Defining start conditions for the container](#defining-start-conditions-for-the-container)
+    - [Exercise 1.9: Volumes](#exercise-19-volumes)
+  - [Allowing external connections into containers](#allowing-external-connections-into-containers)
+    - [Exercise 1.10: Ports open](#exercise-110-ports-open)
+  - [Utilizing tools from the Registry](#utilizing-tools-from-the-registry)
+    - [Exercise 1.11: Spring](#exercise-111-spring)
+
+
 ## Exercise 1.1: Getting started
 
 Start 3 containers from an image that does not automatically exit (such as nginx) in detached mode.
@@ -209,3 +228,67 @@ touch text.log && docker run -v "$(pwd)/text.log:/usr/src/app/text.log" devopsdo
 ```
 
 ![terminal screenshot](ex1_9.png)
+
+---
+## Allowing external connections into containers
+
+### Exercise 1.10: Ports open
+In this exercise, we won't create a new Dockerfile.
+
+The image devopsdockeruh/simple-web-service will start a web service in port 8080 when given the argument "server". In Exercise 1.8 you already did an image that can be used to run the web service without any argument.
+
+Use now the -p flag to access the contents with your browser. The output to your browser should be something like: { message: "You connected to the following path: ...
+
+Submit your used commands for this exercise.
+
+**Solution**
+
+Running the container
+```bash
+$ docker run -p 127.0.0.1:8888:8080 devopsdockeruh/simple-web-service server
+```
+Accessing the server
+```bash
+$ curl localhost:8888 example.com
+```
+
+
+![terminal screenshot](ex1_10.png)
+
+---
+## Utilizing tools from the Registry
+
+### Exercise 1.11: Spring
+
+Create a Dockerfile for an old Java Spring project that can be found from the course repository.
+
+The setup should be straightforward with the README instructions. Tips to get you started:
+
+There are many options for running Java, you may use eg. amazoncorretto FROM amazoncorretto:_tag_ to get Java instead of installing it manually. Pick the tag by using the README and Docker Hub page.
+
+You've completed the exercise when you see a 'Success' message in your browser.
+
+Submit the Dockerfile you used to run the container.
+
+**Solution**
+
+```dockerfile
+FROM amazoncorretto:8
+
+EXPOSE 8080
+
+WORKDIR /usr/src/app
+
+COPY . .
+
+RUN ./mvnw package
+
+CMD ["java", "-jar", "./target/docker-example-1.1.3.jar"]
+```
+
+build and run:
+```bash
+$ docker build . -t javaspringapp 
+
+$ docker run -d -p 8080:8080 javaspringapp
+```
