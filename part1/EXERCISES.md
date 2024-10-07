@@ -194,3 +194,18 @@ FROM devopsdockeruh/simple-web-service:alpine
 CMD ["server"]
 ```
 ![terminal screenshot](ex1_8.png)
+
+---
+## Defining start conditions for the container
+
+### Exercise 1.9: Volumes
+
+Image devopsdockeruh/simple-web-service creates a timestamp every two seconds to /usr/src/app/text.log when it's not given a command. Start the container with a bind mount so that the logs are created into your filesystem.
+
+**Solution**
+
+```d  
+touch text.log && docker run -v "$(pwd)/text.log:/usr/src/app/text.log" devopsdockeruh/simple-web-service
+```
+
+![terminal screenshot](ex1_9.png)
