@@ -10,4 +10,3 @@ services:
       # file text.log must exist (touch text.log)
       - ./text.log:/usr/src/app/text.log
 
-    # command: server

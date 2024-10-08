@@ -1,5 +1,13 @@
 # DevOps with Docker - Exercises PART 2
 
+- [DevOps with Docker - Exercises PART 2](#devops-with-docker---exercises-part-2)
+  - [Migrating to Docker Compose](#migrating-to-docker-compose)
+    - [Exercise 2.1](#exercise-21)
+    - [Exercise 2.2](#exercise-22)
+    - [Exercise 2.3](#exercise-23)
+  - [Docker Networking](#docker-networking)
+    - [Exercise 2.4](#exercise-24)
+
 ## Migrating to Docker Compose
 
 ### Exercise 2.1
@@ -79,4 +87,54 @@ services:
     restart: "no"
     ports:
       - 8080:8080
+```
+
+---
+
+## Docker Networking
+
+### Exercise 2.4
+In this exercise you should expand the configuration done in Exercise 2.3 and set up the example backend to use the key-value database Redis.
+
+Redis is quite often used as a cache to store data so that future requests for data can be served faster.
+
+The backend uses a slow API to fetch some information. You can test the slow API by requesting /ping?redis=true with curl. The frontend app has a button to test this.
+
+So you should improve the performance of the app and configure a Redis container to cache information for the backend. The documentation of the Redis image might contain some useful info.
+
+The backend README should have all the information that is needed for configuring the backend.
+
+When you've correctly configured the button will turn green.
+
+Submit the docker-compose.yml
+
+
+
+**Solution**
+
+```yml
+name: example-front-and-back
+
+services:
+  example-frontend:
+    build: example-frontend
+    image: example-frontend  
+    restart: "no"
+    ports:
+      - 5555:5000 
+    depends_on:
+      - example-backend
+  
+  example-backend:
+    build: example-backend
+    image: example-backend
+    restart: "no"
+    depends_on:
+      - redis
+    ports:
+      - 8080:8080
+  
+  redis:
+    image: redis
+    restart: "unless-stopped"
 ```

@@ -14,6 +14,12 @@ services:
     build: example-backend
     image: example-backend
     restart: "no"
+    depends_on:
+      - redis
     ports:
       - 8080:8080
+  
+  redis:
+    image: redis
+    restart: "unless-stopped"
     
