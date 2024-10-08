@@ -14,6 +14,8 @@
     - [Exercise 2.8](#exercise-28)
     - [Exercise 2.9](#exercise-29)
     - [Exercise 2.10](#exercise-210)
+  - [Containers in Development](#containers-in-development)
+    - [TODO \>\>\>\>\> Exercise 2.11](#todo--exercise-211)
 
 ## Migrating to Docker Compose
 
@@ -570,3 +572,12 @@ Nmap done: 1 IP address (1 host up) scanned in 1.28 seconds
 
 **Solution**
 ![screenshot](ex2_10.png)
+
+---
+
+## Containers in Development
+
+### TODO >>>>> Exercise 2.11
+Select some of your own development projects and start utilizing containers in the development environment.
+
+Explain what you have done. It can be anything, e.g., support for docker-compose.yml to have services (such as databases) containerized or even a fully blown containerized development environment.
