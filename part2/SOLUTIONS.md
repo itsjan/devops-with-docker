@@ -405,6 +405,120 @@ services:
     ports:
       - 80:80
 ```
+
+### Exercise 2.9
+Most of the buttons may have stopped working in the example application. Make sure that every button for exercises works.
+
+Remember to take a peek into the browser's developer consoles again like we did back part 1, remember also this and this.
+
+The buttons of the Nginx exercise and the first button behave differently but you want them to match.
+
+If you had to make any changes explain what you did and where.
+
+Submit the docker-compose.yml and both Dockerfiles.
+
+**Solution**
+
+```yml
+# docker-compose.yml
+name: example-front-and-back
+
+services:
+
+  db:
+    image: postgres:13.2-alpine
+    restart: unless-stopped
+    volumes:
+      - ./database:/var/lib/postgresql/data
+    env_file:
+      - .env
+
+  example-frontend:
+    build: example-frontend
+    image: example-frontend  
+    restart: "no"
+    expose:
+      - 5000 
+    depends_on:
+      - example-backend
+  
+  example-backend:
+    build: example-backend
+    image: example-backend
+    restart: "no"
+    depends_on:
+      - redis
+      - db
+    expose:
+      - 8080
+    environment:
+      - REDIS_HOST=redis
+      - POSTGRES_HOST=db
+      - PORT=8080
+      - REQUEST_ORIGIN=http://localhost:5555
+    env_file:
+      - .env
+
+  redis:
+    image: redis
+    restart: "unless-stopped"
+
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - example-frontend
+      - example-backend
+    ports:
+      - 80:80
+```
+
+```dockerfile
+#example-frontend/Dockerfile
+
+FROM node:16
+
+EXPOSE 5000
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+RUN npx browserslist@latest --update-db
+
+RUN npm run build
+
+RUN npm install -g serve
+
+ENV REACT_APP_BACKEND_URL=http://localhost/api
+
+RUN  ["npm", "run", "build"]
+
+CMD ["serve", "-s", "-l", "5000", "build"]
+```
+
+```dockerfile
+# example-backend/Dockerfile
+
+FROM golang:1.16.14-buster
+
+EXPOSE 8080
+
+WORKDIR /go/src/app
+
+COPY . .
+
+RUN go build
+
+CMD ["./server"]
+```
+
+
 ![screenshot](ex2_8.png)
 
 
