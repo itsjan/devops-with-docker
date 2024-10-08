@@ -9,4 +9,5 @@
 - part 1: [solutions](./part1/SOLUTIONS.md) 
   - Only Dockerfiles and commandline options are used, no docker compose.
 - part 2 : [solutions](./part2/SOLUTIONS.md) 
-  - Docker compose, Docker Networking    
+  - Docker compose, Docker Networking
+  - TODO ex 2.11   
