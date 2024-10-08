@@ -10,6 +10,7 @@
     - [Exercise 2.5](#exercise-25)
   - [Volumes im action](#volumes-im-action)
     - [Exercise 2.6](#exercise-26)
+    - [Exercise 2.7](#exercise-27)
 
 ## Migrating to Docker Compose
 
@@ -171,6 +172,7 @@ docker compose up --scale compute=2
 ## Volumes im action
 
 ### Exercise 2.6
+
 Let us continue with the example app that we worked with in Exercise 2.4.
 
 Now you should add a database to the example backend.
@@ -191,6 +193,7 @@ Backend, frontend, redis and a database
 
 **Solution**
 
+
 ```properties
 # .env file
 # Database configuration for PostgreSQL 
@@ -208,8 +211,69 @@ services:
   db:
     image: postgres:13.2-alpine
     restart: unless-stopped
+    env_file:
+      - .env
+
+  example-frontend:
+    build: example-frontend
+    image: example-frontend  
+    restart: "no"
+    ports:
+      - 5555:5000 
+    depends_on:
+      - example-backend
+  
+  example-backend:
+    build: example-backend
+    image: example-backend
+    restart: "no"
+    depends_on:
+      - redis
+      - db
+    ports:
+      - 8080:8080
+    environment:
+      - REDIS_HOST=redis
+      - POSTGRES_HOST=db
+      - PORT=8080
+      - REQUEST_ORIGIN=http://localhost:5555
+    env_file:
+      - .env
+
+  redis:
+    image: redis
+    restart: "unless-stopped"    
+```
+
+### Exercise 2.7
+Postgres image uses a volume by default. Define manually a volume for the database in a convenient location such as in ./database so you should use now a bind mount. The image documentation may help you with the task.
+
+After you have configured the bind mount volume:
+
+Save a few messages through the frontend
+Run docker compose down
+Run docker compose up and see that the messages are available after refreshing browser
+Run docker compose down and delete the volume folder manually
+Run docker compose up and the data should be gone
+TIP: To save you the trouble of testing all of those steps, just look into the folder before trying the steps. If it's empty after docker compose up then something is wrong.
+
+Submit the docker-compose.yml
+
+The benefit of a bind mount is that since you know exactly where the data is in your file system, it is easy to create backups. If the Docker managed volumes are used, the location of the data in the file system can not be controlled and that makes backups a bit less trivial...
+
+**Solution**
+
+```yml
+# docker-compose.yml
+name: example-front-and-back
+
+services:
+
+  db:
+    image: postgres:13.2-alpine
+    restart: unless-stopped
     volumes:
-      - ./database:/var/lib/postgresql/data
+      - ./database:/var/lib/postgresql/data    # <---- bind mount
     env_file:
       - .env
 
