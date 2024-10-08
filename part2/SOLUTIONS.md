@@ -133,8 +133,13 @@ services:
       - redis
     ports:
       - 8080:8080
+    environment:
+      - REDIS_HOST=redis
+      - PORT=8080
+      - REQUEST_ORIGIN=http://localhost:5555
   
   redis:
     image: redis
     restart: "unless-stopped"
+    
 ```
