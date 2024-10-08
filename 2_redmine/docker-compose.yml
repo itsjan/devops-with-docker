@@ -1,0 +1,26 @@
+name: "part2_redmine"
+
+services:
+  db:
+    image: postgres:13.2-alpine
+    restart: unless-stopped
+    volumes:
+      - redmine_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: example
+    container_name: db_redmine
+
+  redmine:
+    image: redmine
+    restart: unless-stopped
+    volumes:
+      - redmine_files:/usr/src/redmine/files
+    container_name: redmine
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+
+volumes:
+  redmine_data:
+  redmine_files: 

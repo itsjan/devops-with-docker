@@ -8,6 +8,8 @@
   - [Docker Networking](#docker-networking)
     - [Exercise 2.4](#exercise-24)
     - [Exercise 2.5](#exercise-25)
+  - [Volumes im action](#volumes-im-action)
+    - [Exercise 2.6](#exercise-26)
 
 ## Migrating to Docker Compose
 
@@ -163,3 +165,81 @@ docker compose up --scale compute=2
 ```
 
 ![screenshot](./ex2_5.png)
+
+---
+
+## Volumes im action
+
+### Exercise 2.6
+Let us continue with the example app that we worked with in Exercise 2.4.
+
+Now you should add a database to the example backend.
+
+Use a Postgres database to save messages. For now, there is no need to configure a volume since the official Postgres image sets a default volume for us. Use the Postgres image documentation to your advantage when configuring: https://hub.docker.com/_/postgres/. Especially part Environment Variables is a valuable one.
+
+The backend README should have all the information needed to connect.
+
+There is again a button (and a form!) in the frontend that you can use to ensure your configuration is done right.
+
+Submit the docker-compose.yml
+
+TIPS:
+
+When configuring the database, you might need to destroy the automatically created volumes. Use commands docker volume prune, docker volume ls and docker volume rm to remove unused volumes when testing. Make sure to remove containers that depend on them beforehand.
+restart: unless-stopped can help if the Postgres takes a while to get ready
+Backend, frontend, redis and a database
+
+**Solution**
+
+```properties
+# .env file
+# Database configuration for PostgreSQL 
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+POSTGRES_DB=postgres
+```
+
+```yml
+# docker-compose.yml
+name: example-front-and-back
+
+services:
+
+  db:
+    image: postgres:13.2-alpine
+    restart: unless-stopped
+    volumes:
+      - ./database:/var/lib/postgresql/data
+    env_file:
+      - .env
+
+  example-frontend:
+    build: example-frontend
+    image: example-frontend  
+    restart: "no"
+    ports:
+      - 5555:5000 
+    depends_on:
+      - example-backend
+  
+  example-backend:
+    build: example-backend
+    image: example-backend
+    restart: "no"
+    depends_on:
+      - redis
+      - db
+    ports:
+      - 8080:8080
+    environment:
+      - REDIS_HOST=redis
+      - POSTGRES_HOST=db
+      - PORT=8080
+      - REQUEST_ORIGIN=http://localhost:5555
+    env_file:
+      - .env
+
+  redis:
+    image: redis
+    restart: "unless-stopped"    
+```

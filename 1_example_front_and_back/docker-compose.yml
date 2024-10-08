@@ -1,6 +1,16 @@
+# docker-compose.yml
 name: example-front-and-back
 
 services:
+
+  db:
+    image: postgres:13.2-alpine
+    restart: unless-stopped
+    volumes:
+      - ./database:/var/lib/postgresql/data
+    env_file:
+      - .env
+
   example-frontend:
     build: example-frontend
     image: example-frontend  
@@ -16,13 +26,17 @@ services:
     restart: "no"
     depends_on:
       - redis
+      - db
     ports:
       - 8080:8080
     environment:
       - REDIS_HOST=redis
+      - POSTGRES_HOST=db
       - PORT=8080
       - REQUEST_ORIGIN=http://localhost:5555
-  
+    env_file:
+      - .env
+
   redis:
     image: redis
     restart: "unless-stopped"
