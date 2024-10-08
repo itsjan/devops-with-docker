@@ -11,6 +11,7 @@
   - [Volumes im action](#volumes-im-action)
     - [Exercise 2.6](#exercise-26)
     - [Exercise 2.7](#exercise-27)
+    - [Exercise 2.8](#exercise-28)
 
 ## Migrating to Docker Compose
 
@@ -307,3 +308,103 @@ services:
     image: redis
     restart: "unless-stopped"    
 ```
+
+### Exercise 2.8
+In this exercise, you shall add Nginx to work as a reverse proxy in front of the example app frontend and backend.
+
+According to Wikipedia a reverse proxy is a type of proxy server that retrieves resources on behalf of a client from one or more servers. These resources are then returned to the client, appearing as if they originated from the reverse proxy server itself.
+
+Backend, frontend, redis, a database and nginx
+
+So in our case, the reverse proxy will be the single point of entry to our application, and the final goal will be to set both the React frontend and the Express backend behind the reverse proxy.
+
+The idea is that a browser makes all requests to http://localhost. If the request has a URL prefix http://localhost/api, Nginx should forward the request to the backend container. All the other requests are directed to the frontend container.
+
+So, at the end, you should see that the frontend is accessible simply by going to http://localhost. All buttons, except the one labeled Exercise 2.8 may have stopped working, do not worry about them, we shall fix that later.
+
+The following file should be set to /etc/nginx/nginx.conf inside the Nginx container. You can use a file bind mount where the contents of the file is the following:
+```
+events { worker_connections 1024; }
+
+http {
+  server {
+    listen 80;
+
+    location / {
+      proxy_pass _frontend-connection-url_;
+    }
+
+    # configure here where requests to http://localhost/api/...
+    # are forwarded
+    location /api/ {
+      proxy_set_header Host $host;
+      proxy_pass _backend-connection-url_;
+    }
+  }
+}
+```
+
+Nginx, backend and frontend should be connected in the same network. See the image above for how the services are connected. You find Nginx-documentation helpful, but remember, the configuration you need is pretty straightforward, if you end up doing complex things, you are most likely doing something wrong.
+
+
+Submit the docker-compose.yml
+
+**Solution**
+
+```yml
+# docker-compose.yml
+name: example-front-and-back
+
+services:
+
+  db:
+    image: postgres:13.2-alpine
+    restart: unless-stopped
+    volumes:
+      - ./database:/var/lib/postgresql/data
+    env_file:
+      - .env
+
+  example-frontend:
+    build: example-frontend
+    image: example-frontend  
+    restart: "no"
+    expose:
+      - 5000 
+    depends_on:
+      - example-backend
+  
+  example-backend:
+    build: example-backend
+    image: example-backend
+    restart: "no"
+    depends_on:
+      - redis
+      - db
+    expose:
+      - 8080
+    environment:
+      - REDIS_HOST=redis
+      - POSTGRES_HOST=db
+      - PORT=8080
+      - REQUEST_ORIGIN=http://localhost:5555
+    env_file:
+      - .env
+
+  redis:
+    image: redis
+    restart: "unless-stopped"
+
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - example-frontend
+      - example-backend
+    ports:
+      - 80:80
+```
+![screenshot](ex2_8.png)
+
+

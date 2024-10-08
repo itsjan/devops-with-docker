@@ -15,8 +15,8 @@ services:
     build: example-frontend
     image: example-frontend  
     restart: "no"
-    ports:
-      - 5555:5000 
+    expose:
+      - 5000 
     depends_on:
       - example-backend
   
@@ -27,8 +27,8 @@ services:
     depends_on:
       - redis
       - db
-    ports:
-      - 8080:8080
+    expose:
+      - 8080
     environment:
       - REDIS_HOST=redis
       - POSTGRES_HOST=db
@@ -40,4 +40,14 @@ services:
   redis:
     image: redis
     restart: "unless-stopped"
+
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - example-frontend
+      - example-backend
+    ports:
+      - 80:80
     
