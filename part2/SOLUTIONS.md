@@ -7,6 +7,7 @@
     - [Exercise 2.3](#exercise-23)
   - [Docker Networking](#docker-networking)
     - [Exercise 2.4](#exercise-24)
+    - [Exercise 2.5](#exercise-25)
 
 ## Migrating to Docker Compose
 
@@ -143,3 +144,22 @@ services:
     restart: "unless-stopped"
     
 ```
+
+### Exercise 2.5
+The project https://github.com/docker-hy/material-applications/tree/main/scaling-exercise is a barely working application. Go ahead and clone it for yourself. The project already includes docker-compose.yml so you can start it by running docker compose up.
+
+The application should be accessible through http://localhost:3000. However it doesn't work well enough and we've added a load balancer for scaling. Your task is to scale the compute containers so that the button in the application turns green.
+
+This exercise was created with Sasu Mäkinen
+
+Please return the used commands for this exercise.
+
+**Solution**
+
+The excercise can be solved by adding compute instances. This will distribute the load between the compute containers.
+On a M1 Mac it was enough to have 2 compute instances for the load to be balanced.
+```bash
+docker compose up --scale compute=2 
+```
+
+![screenshot](./ex2_5.png)

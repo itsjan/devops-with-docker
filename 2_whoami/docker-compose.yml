@@ -1,0 +1,27 @@
+name: "2_whoami"
+
+services:
+  whoami:
+    image: jwilder/whoami
+    environment:
+    # this is for the nginx proxy:
+      - VIRTUAL_HOST=whoami.colasloth.com
+  proxy:
+    image: jwilder/nginx-proxy
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    ports:
+      - 80:80
+  
+  hello:
+    image: nginx:1.19-alpine # a web server
+    volumes: # mount a local file as the index.html of the web server
+      - ./hello.html:/usr/share/nginx/html/index.html:ro
+    environment:
+      - VIRTUAL_HOST=hello.colasloth.com
+  world:
+    image: nginx:1.19-alpine
+    volumes:
+      - ./world.html:/usr/share/nginx/html/index.html:ro
+    environment:
+      - VIRTUAL_HOST=world.colasloth.com
