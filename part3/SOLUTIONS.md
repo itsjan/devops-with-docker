@@ -58,3 +58,70 @@ cd $TMP_DIR
 docker build -t $HUB_REPO .
 docker push $HUB_REPO
 ```
+
+### 3.4: Building images from inside of a container
+As seen from the Docker Compose file, the Watchtower uses a volume to docker.sock socket to access the Docker daemon of the host from the container:
+
+services:
+watchtower:
+  image: containrrr/watchtower
+  volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+  # ...
+
+In practice this means that Watchtower can run commands on Docker the same way we can "command" Docker from the cli with docker ps, docker run etc.
+
+We can easily use the same trick in our own scripts! So if we mount the docker.sock socket to a container, we can use the command docker inside the container, just like we are using it in the host terminal!
+
+Dockerize now the script you did for the previous exercise. You can use images from this repository to run Docker inside Docker!
+
+
+Note that now the Docker Hub credentials are defined as environment variables since the script needs to log in to Docker Hub for the push.
+
+Submit the Dockerfile and the final version of your script.
+
+Hint: you quite likely need to use ENTRYPOINT in this Exercise. See Part 1 for more.
+
+**Solution**
+
+Dockerfile
+```dockerfile
+FROM docker
+
+WORKDIR /usr/local/bin
+
+COPY ./builder.sh /usr/local/bin/builder.sh
+RUN chmod +x /usr/local/bin/builder.sh
+
+ENTRYPOINT [ "sh", "builder.sh" ]
+
+```
+
+builder.sh
+```sh
+#!/bin/bash
+# file builder.sh
+
+if [ "$#" -ne 2 ]; then
+    echo "Usage: $0 <github-repo> <docker-hub-repo>"
+    exit 1
+fi
+
+REPO=$1
+HUB_REPO=$2
+
+TMP_DIR=$(mktemp -d)
+git clone https://github.com/$REPO.git $TMP_DIR
+cd $TMP_DIR
+docker build -t $HUB_REPO .
+docker login -u $DOCKER_USER -p $DOCKER_PWD
+docker push $HUB_REPO
+```
+command to run:
+
+```bash
+docker run -e DOCKER_USER=<username>` \   # change to your username
+  -e DOCKER_PWD=<password>` \             # change to your password
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  builder mluukkai/express_app itsjan/testataan
+```

@@ -13,4 +13,5 @@ TMP_DIR=$(mktemp -d)
 git clone https://github.com/$REPO.git $TMP_DIR
 cd $TMP_DIR
 docker build -t $HUB_REPO .
+docker login -u $DOCKER_USER -p $DOCKER_PWD
 docker push $HUB_REPO
