@@ -478,7 +478,6 @@ Containerised project in Docker Hub:
 ```bash
 docker run -d -p 8080:80 itsjan/arcade-game
 ```
-Point your browser to <http://localhost:8080> to start the game.
 
 ### Exercise 1.16: Cloud deployment
 It is time to wrap up this part and run a containerized app in the cloud.
