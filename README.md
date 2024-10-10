@@ -11,3 +11,5 @@
 - part 2 : [solutions](./part2/SOLUTIONS.md) 
   - Docker compose, Docker Networking
   - TODO ex 2.11   
+- part 3 : [solutions](./part3/SOLUTIONS.md)
+  - Container best practices, process improvements
